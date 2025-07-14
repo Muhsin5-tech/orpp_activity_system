@@ -20,8 +20,8 @@ def send_email(subject, body, recipient):
 
 def generate_access_token(identity):
     expires = timedelta(hours=24)
-    return create_access_token(identity=identity, expires_delta=expires)
+    return create_access_token(identity=str(identity), expires_delta=expires)
 
 def generate_refresh_token(identity):
     expires = timedelta(days=7)
-    return create_refresh_token(identity=identity, expires_delta=expires)
+    return create_refresh_token(identity=str(identity), expires_delta=expires)
