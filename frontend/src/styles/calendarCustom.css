@@ -1,0 +1,24 @@
+.rbc-toolbar button {
+    background-color: #002147;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    margin: 0 2px;
+    border-radius: 4px;
+    font-family: "Segoe UI", sans-serif;
+    cursor: pointer;
+  }
+  .rbc-toolbar button:hover {
+    background-color: #1a365d;
+  }
+  .rbc-toolbar .rbc-active {
+    background-color: #e9c46a;
+    color: #002147;
+  }
+  .rbc-event {
+    font-family: "Segoe UI", sans-serif !important;
+  }
+  .rbc-month-view, .rbc-time-view {
+    font-family: "Segoe UI", sans-serif;
+  }
+  
