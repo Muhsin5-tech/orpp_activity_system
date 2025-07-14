@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://127.0.0.1:5000/api";
+const API_BASE_URL = "https://orpp-activity.onrender.com/api";
 
 export const signup = async (formData) => {
   const response = await fetch(`${API_BASE_URL}/auth/signup`, {
@@ -54,7 +54,7 @@ export const resetPassword = async (email, otp, new_password) => {
   return response.json();
 };
 
-const API_URL = "http://127.0.0.1:5000/api";
+const API_URL = "https://orpp-activity.onrender.com/api";
 
 export async function fetchActivities(token) {
   const res = await fetch(`${API_URL}/activities`, {
@@ -100,7 +100,7 @@ export async function deleteActivity(id, token) {
 }
 
 export const searchActivities = async (query, token) => {
-  const response = await fetch(`http://127.0.0.1:5000/api/activities/search?q=${encodeURIComponent(query)}`, {
+  const response = await fetch(`https://orpp-activity.onrender.com/api/activities/search?q=${encodeURIComponent(query)}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
