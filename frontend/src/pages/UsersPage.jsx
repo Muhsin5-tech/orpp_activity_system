@@ -5,6 +5,8 @@ function UsersPage() {
   const [users, setUsers] = useState([]);
   const [editingUserId, setEditingUserId] = useState(null);
   const [editData, setEditData] = useState({});
+  const [userToDelete, setUserToDelete] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -20,10 +22,17 @@ function UsersPage() {
     }
   };
 
-  const handleDelete = async (id) => {
+  const confirmDelete = (user) => {
+    setUserToDelete(user);
+    setShowConfirm(true);
+  };
+
+  const handleConfirmedDelete = async () => {
     try {
-      await deleteUserById(id, token);
-      setUsers(users.filter(u => u.id !== id));
+      await deleteUserById(userToDelete.id, token);
+      setUsers(users.filter((u) => u.id !== userToDelete.id));
+      setShowConfirm(false);
+      setUserToDelete(null);
     } catch (error) {
       console.error("Delete error:", error);
     }
@@ -31,7 +40,11 @@ function UsersPage() {
 
   const handleEditClick = (user) => {
     setEditingUserId(user.id);
-    setEditData({ full_name: user.full_name, role: user.role, department: user.department });
+    setEditData({
+      full_name: user.full_name,
+      role: user.role,
+      department: user.department,
+    });
   };
 
   const handleEditChange = (e) => {
@@ -132,7 +145,7 @@ function UsersPage() {
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDelete(user.id)}
+                        onClick={() => confirmDelete(user)}
                         className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700"
                       >
                         Delete
@@ -145,6 +158,31 @@ function UsersPage() {
           </tbody>
         </table>
       </div>
+
+      {showConfirm && userToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg text-center">
+            <h2 className="text-lg font-semibold mb-4 text-red-700">
+              Are you sure you want to delete{" "}
+              <span className="font-bold">{userToDelete.full_name}</span>?
+            </h2>
+            <div className="flex justify-center space-x-4">
+              <button
+                onClick={handleConfirmedDelete}
+                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+              >
+                Yes
+              </button>
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-600"
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
