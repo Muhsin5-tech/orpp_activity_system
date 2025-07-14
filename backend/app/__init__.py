@@ -13,7 +13,7 @@ def create_app():
     ma.init_app(app)
     jwt.init_app(app)
     migrate.init_app(app, db)
-    cors.init_app(app, supports_credentials=True, origins=["http://localhost:5173"], methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+    cors.init_app(app, supports_credentials=True, origins=["https://orpp-activity.onrender.com"], methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
     mail.init_app(app)
 
     # Register blueprints
