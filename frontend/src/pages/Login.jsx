@@ -14,7 +14,7 @@ function Login() {
       const res = await login(email, password);
       if (res.access_token) {
         localStorage.setItem("token", res.access_token);
-        localStorage.setItem("role", res.user.role.toLowerCase()); // ✅ store lowercase
+        localStorage.setItem("role", res.user.role.toLowerCase());
         navigate(res.user.role.toLowerCase() === "admin" ? "/calendar" : "/view-calendar");
       } else if (res.message === "OTP sent to your email.") {
         localStorage.setItem("otp_email", email);

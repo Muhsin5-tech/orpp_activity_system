@@ -34,12 +34,12 @@ function OTPPage() {
     }
     try {
       const res = await verifyOTP(email, code);
-      console.log("OTP verification response:", res); // ✅ Debug log
+      console.log("OTP verification response:", res);
 
       if (res.access_token) {
         localStorage.setItem("token", res.access_token);
         localStorage.setItem("refresh_token", res.refresh_token);
-        localStorage.setItem("role", res.user.role.toLowerCase()); // ✅ Fix here
+        localStorage.setItem("role", res.user.role.toLowerCase());
         localStorage.removeItem("otp_email");
 
         navigate(res.user.role.toLowerCase() === "admin" ? "/calendar" : "/view-calendar");

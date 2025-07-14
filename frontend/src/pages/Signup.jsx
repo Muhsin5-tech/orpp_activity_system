@@ -63,7 +63,7 @@ function Signup() {
     try {
       const data = await signup(payload);
       if (data.message?.toLowerCase().includes("created")) {
-        navigate("/login"); // ✅ Redirect to login page
+        navigate("/login");
       } else {
         alert(data.message || "Signup failed.");
       }

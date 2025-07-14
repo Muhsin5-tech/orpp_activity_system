@@ -15,7 +15,7 @@ function PartnersCarousel() {
   useEffect(() => {
     const interval = setInterval(() => {
       setStartIndex((prevIndex) => (prevIndex + 1) % sponsors.length);
-    }, 5000); // Change every 5 seconds
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
