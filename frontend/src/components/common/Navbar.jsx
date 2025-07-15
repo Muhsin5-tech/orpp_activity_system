@@ -113,10 +113,6 @@ function Navbar() {
               </NavLink>
             )}
 
-            <NavLink to="/reports" className={({ isActive }) => isActive ? "text-yellow-500" : "hover:text-yellow-400"}>
-              Reports
-            </NavLink>
-
             {role === "admin" && (
               <>
                 <NavLink to="/users" className={({ isActive }) => isActive ? "text-yellow-500" : "hover:text-yellow-400"}>
@@ -147,10 +143,6 @@ function Navbar() {
                   Calendar
                 </NavLink>
               )}
-
-              <NavLink to="/reports" onClick={() => setMobileOpen(false)} className="hover:text-yellow-400">
-                Reports
-              </NavLink>
 
               {role === "admin" && (
                 <>

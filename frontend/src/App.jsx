@@ -10,7 +10,6 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import UsersPage from "./pages/UsersPage";
 import DepartmentsPage from "./pages/DepartmentsPage";
-import ReportsPage from "./pages/ReportsPage";
 import NotFound from "./pages/NotFound";
 import Footer from "./components/common/Footer";
 import PartnersCarousel from "./components/common/PartnersCarousel";
@@ -46,14 +45,6 @@ function App() {
               element={
                 <ProtectedRoute>
                   <SearchResults />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/reports"
-              element={
-                <ProtectedRoute>
-                  <ReportsPage />
                 </ProtectedRoute>
               }
             />

@@ -34,7 +34,7 @@ function Login() {
           <img src={orppLogo} alt="ORPP Logo" className="h-20 w-auto" />
         </div>
         <h1 className="text-2xl font-bold text-center text-blue-900 mb-6">
-          Login to ORPP Account
+          Login to ORPP Activities
         </h1>
         <form onSubmit={handleLogin}>
           <div className="mb-3">
