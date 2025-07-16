@@ -36,8 +36,13 @@ function Navbar() {
       <div className="bg-[#002147] text-white text-sm py-2">
         <div className="container mx-auto flex justify-between items-center px-4 flex-wrap gap-4">
           <div className="flex gap-4 flex-wrap items-center">
-            <span>📞 +254(0) 204022000</span>
-            <span>✉️ info@orpp.or.ke</span>
+            <span>
+              📞 <a href="tel:+254204022000">+254(0) 204022000</a>
+            </span>
+            <span>
+              ✉️ <a href="mailto:info@orpp.or.ke">info@orpp.or.ke</a>
+            </span>
+
             <div className="hidden sm:flex gap-3 items-center">
               <span className="opacity-50">|</span>
               <a href="https://ippms.orpp.or.ke/auth/login?ReturnUrl=%2F" className="hover:underline">IPPMS</a>
@@ -50,11 +55,6 @@ function Navbar() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex gap-2">
-              <span>EN</span>
-              <span className="opacity-50">|</span>
-              <span>AR</span>
-            </div>
             <button
               onClick={handleLogout}
               className="text-red-500 hover:text-red-700 font-semibold"

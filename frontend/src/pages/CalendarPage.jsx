@@ -122,7 +122,26 @@ function CalendarPage() {
   };
 
   const categories = ["Meeting", "Forum", "Workshop", "Compliance Deadline"];
-  const departments = ["Registrar’s Office", "Compliance", "ICT", "Finance", "Liaison", "Legal"];
+  const departments = [
+    "Registration and Field Services Department",
+    "Registration Section",
+    "Field Services Section",
+    "ICT Section",
+    "Compliance and Regulation Department",
+    "Compliance Section",
+    "Political Parties Capacity Building Section",
+    "Records Management Section",
+    "Finance and Accounts Department",
+    "Human Resource Management & Administration Department",
+    "Planning, Research & Innovation Section",
+    "Resource Centre Section",
+    "Partnerships and Linkages Section",
+    "Corporate Communications Unit",
+    "Legal Services Unit",
+    "Supply Chain Management Unit",
+    "Internal Audit Unit",
+    "Registrar’s Office"
+  ];
 
   const eventStyleGetter = event => ({
     style: {
