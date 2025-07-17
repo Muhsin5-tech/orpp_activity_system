@@ -1,13 +1,14 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_from_directory
 from app.extensions import db
 from app.models import Activity
 from flask_jwt_extended import jwt_required
 from datetime import datetime
 from sqlalchemy import or_
-import os
 from werkzeug.utils import secure_filename
+import os
 
-UPLOAD_FOLDER = "instance/uploads"
+# Setup upload folder
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 activity_bp = Blueprint("activity_bp", __name__)
@@ -27,8 +28,11 @@ def get_activities():
             "end_time": a.end_time.isoformat(),
             "venue": a.venue,
             "department": a.department,
+            "member_notes": a.member_notes,
+            "attachment": a.attachment,
         })
     return jsonify(result), 200
+
 
 @activity_bp.route("/activities/<int:id>", methods=["GET"])
 @jwt_required()
@@ -43,7 +47,10 @@ def get_activity(id):
         "end_time": activity.end_time.isoformat(),
         "venue": activity.venue,
         "department": activity.department,
+        "member_notes": activity.member_notes,
+        "attachment": activity.attachment,
     }), 200
+
 
 @activity_bp.route("/activities", methods=["POST"])
 @jwt_required()
@@ -62,12 +69,12 @@ def create_activity():
         if not title or not category or not start_time or not end_time:
             return jsonify({"error": "Missing required fields."}), 400
 
-        attachment_path = None
+        attachment_filename = None
         if attachment_file:
             filename = secure_filename(attachment_file.filename)
             filepath = os.path.join(UPLOAD_FOLDER, filename)
             attachment_file.save(filepath)
-            attachment_path = filepath
+            attachment_filename = filename
 
         new_activity = Activity(
             title=title,
@@ -78,7 +85,7 @@ def create_activity():
             venue=venue,
             department=department,
             member_notes=member_notes,
-            attachment=attachment_path
+            attachment=attachment_filename
         )
 
         db.session.add(new_activity)
@@ -88,6 +95,7 @@ def create_activity():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
 
 @activity_bp.route("/activities/<int:id>", methods=["PUT"])
 @jwt_required()
@@ -101,6 +109,7 @@ def update_activity(id):
     activity.venue = data.get("venue", activity.venue)
     activity.member_notes = data.get("member_notes", activity.member_notes)
     activity.department = data.get("department", activity.department)
+    
     if data.get("start_time"):
         activity.start_time = datetime.fromisoformat(data["start_time"])
     if data.get("end_time"):
@@ -109,6 +118,7 @@ def update_activity(id):
     db.session.commit()
     return jsonify({"message": "Activity updated successfully."}), 200
 
+
 @activity_bp.route("/activities/<int:id>", methods=["DELETE"])
 @jwt_required()
 def delete_activity(id):
@@ -116,6 +126,7 @@ def delete_activity(id):
     db.session.delete(activity)
     db.session.commit()
     return jsonify({"message": "Activity deleted successfully."}), 200
+
 
 @activity_bp.route("/activities/search", methods=["GET"])
 @jwt_required()
@@ -146,6 +157,12 @@ def search_activities():
             "venue": a.venue,
             "member_notes": a.member_notes,
             "department": a.department,
+            "attachment": a.attachment,
         })
 
     return jsonify(activities_data), 200
+
+
+@activity_bp.route("/uploads/<path:filename>", methods=["GET"])
+def uploaded_file(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename, as_attachment=True)

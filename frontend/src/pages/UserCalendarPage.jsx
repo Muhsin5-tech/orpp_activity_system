@@ -95,7 +95,7 @@ function UserCalendarPage() {
                 <p>
                   <strong>Attachment:</strong>{" "}
                   <a
-                    href={`http://localhost:5000/uploads/${selectedEvent.attachment.split("/").pop()}`}
+                    href={`https://orpp-activity.onrender.com/api/uploads/${selectedEvent.attachment}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 underline"
