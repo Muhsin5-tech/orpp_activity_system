@@ -4,9 +4,14 @@ from app.models import Activity
 from flask_jwt_extended import jwt_required
 from datetime import datetime
 from sqlalchemy import or_
+import os
+from werkzeug.utils import secure_filename
+
+
+UPLOAD_FOLDER = "instance/uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 activity_bp = Blueprint("activity_bp", __name__)
-
 
 @activity_bp.route("/activities", methods=["GET"])
 @jwt_required()
@@ -23,10 +28,8 @@ def get_activities():
             "end_time": a.end_time.isoformat(),
             "venue": a.venue,
             "department": a.department,
-            "member_notes": a.member_notes
         })
     return jsonify(result), 200
-
 
 @activity_bp.route("/activities/<int:id>", methods=["GET"])
 @jwt_required()
@@ -41,23 +44,20 @@ def get_activity(id):
         "end_time": activity.end_time.isoformat(),
         "venue": activity.venue,
         "department": activity.department,
-        "member_notes": activity.member_notes
     }), 200
-
 
 @activity_bp.route("/activities", methods=["POST"])
 @jwt_required()
 def create_activity():
     try:
-        data = request.get_json()
-        title = data.get("title")
-        description = data.get("description")
-        category = data.get("category")
-        start_time = data.get("start_time")
-        end_time = data.get("end_time")
-        venue = data.get("venue")
-        department = data.get("department")
-        member_notes = data.get("member_notes")
+        title = request.form.get("title")
+        description = request.form.get("description")
+        category = request.form.get("category")
+        start_time = request.form.get("start_time")
+        end_time = request.form.get("end_time")
+        venue = request.form.get("venue")
+        department = request.form.get("department")
+        member_notes = request.form.get("member_notes")
 
         if not title or not category or not start_time or not end_time:
             return jsonify({"error": "Missing required fields."}), 400
@@ -70,7 +70,7 @@ def create_activity():
             end_time=datetime.fromisoformat(end_time),
             venue=venue,
             department=department,
-            member_notes=member_notes
+            member_notes=member_notes,
         )
 
         db.session.add(new_activity)
@@ -80,7 +80,6 @@ def create_activity():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-
 
 @activity_bp.route("/activities/<int:id>", methods=["PUT"])
 @jwt_required()
@@ -94,7 +93,6 @@ def update_activity(id):
     activity.venue = data.get("venue", activity.venue)
     activity.member_notes = data.get("member_notes", activity.member_notes)
     activity.department = data.get("department", activity.department)
-
     if data.get("start_time"):
         activity.start_time = datetime.fromisoformat(data["start_time"])
     if data.get("end_time"):
@@ -103,7 +101,6 @@ def update_activity(id):
     db.session.commit()
     return jsonify({"message": "Activity updated successfully."}), 200
 
-
 @activity_bp.route("/activities/<int:id>", methods=["DELETE"])
 @jwt_required()
 def delete_activity(id):
@@ -111,7 +108,6 @@ def delete_activity(id):
     db.session.delete(activity)
     db.session.commit()
     return jsonify({"message": "Activity deleted successfully."}), 200
-
 
 @activity_bp.route("/activities/search", methods=["GET"])
 @jwt_required()
@@ -140,8 +136,8 @@ def search_activities():
             "start_time": a.start_time.isoformat(),
             "end_time": a.end_time.isoformat(),
             "venue": a.venue,
+            "member_notes": a.member_notes,
             "department": a.department,
-            "member_notes": a.member_notes
         })
 
     return jsonify(activities_data), 200
