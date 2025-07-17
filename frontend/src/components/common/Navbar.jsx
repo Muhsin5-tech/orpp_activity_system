@@ -33,7 +33,7 @@ function Navbar() {
   return (
     <header>
       {/* Top Contact Bar */}
-      <div className="bg-[#002147] text-white text-sm py-2">
+      <div className="bg-[#20295b] text-white text-sm py-2">
         <div className="container mx-auto flex justify-between items-center px-4 flex-wrap gap-4">
           <div className="flex gap-4 flex-wrap items-center">
             <span>
@@ -66,7 +66,7 @@ function Navbar() {
       </div>
 
       {/* Logo + Search */}
-      <div className="bg-white border-b border-gray-300 py-4 px-4 sm:px-6">
+      <div className="bg- [#eaeaea] border-b border-gray-300 py-4 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-4">
           <img src={orppLogo} alt="ORPP Logo" className="h-20" />
 

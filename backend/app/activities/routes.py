@@ -1,17 +1,24 @@
-from flask import Blueprint, request, jsonify, send_from_directory
+from flask import Blueprint, request, jsonify, send_from_directory, current_app
 from app.extensions import db
 from app.models import Activity
 from flask_jwt_extended import jwt_required
 from datetime import datetime
 from sqlalchemy import or_
-from werkzeug.utils import secure_filename
 import os
-
-# Setup upload folder
-UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+from werkzeug.utils import secure_filename
 
 activity_bp = Blueprint("activity_bp", __name__)
+
+# ✅ Use instance/uploads for file storage
+@activity_bp.before_app_first_request
+def create_upload_folder():
+    upload_folder = os.path.join(current_app.instance_path, 'uploads')
+    os.makedirs(upload_folder, exist_ok=True)
+
+# Utility function
+def get_upload_folder():
+    return os.path.join(current_app.instance_path, 'uploads')
+
 
 @activity_bp.route("/activities", methods=["GET"])
 @jwt_required()
@@ -29,7 +36,7 @@ def get_activities():
             "venue": a.venue,
             "department": a.department,
             "member_notes": a.member_notes,
-            "attachment": a.attachment,
+            "attachment": a.attachment
         })
     return jsonify(result), 200
 
@@ -48,7 +55,7 @@ def get_activity(id):
         "venue": activity.venue,
         "department": activity.department,
         "member_notes": activity.member_notes,
-        "attachment": activity.attachment,
+        "attachment": activity.attachment
     }), 200
 
 
@@ -72,8 +79,9 @@ def create_activity():
         attachment_filename = None
         if attachment_file:
             filename = secure_filename(attachment_file.filename)
-            filepath = os.path.join(UPLOAD_FOLDER, filename)
-            attachment_file.save(filepath)
+            upload_folder = get_upload_folder()
+            file_path = os.path.join(upload_folder, filename)
+            attachment_file.save(file_path)
             attachment_filename = filename
 
         new_activity = Activity(
@@ -109,7 +117,7 @@ def update_activity(id):
     activity.venue = data.get("venue", activity.venue)
     activity.member_notes = data.get("member_notes", activity.member_notes)
     activity.department = data.get("department", activity.department)
-    
+
     if data.get("start_time"):
         activity.start_time = datetime.fromisoformat(data["start_time"])
     if data.get("end_time"):
@@ -155,9 +163,9 @@ def search_activities():
             "start_time": a.start_time.isoformat(),
             "end_time": a.end_time.isoformat(),
             "venue": a.venue,
-            "member_notes": a.member_notes,
             "department": a.department,
-            "attachment": a.attachment,
+            "member_notes": a.member_notes,
+            "attachment": a.attachment
         })
 
     return jsonify(activities_data), 200
@@ -165,4 +173,5 @@ def search_activities():
 
 @activity_bp.route("/uploads/<path:filename>", methods=["GET"])
 def uploaded_file(filename):
-    return send_from_directory(UPLOAD_FOLDER, filename, as_attachment=True)
+    upload_folder = get_upload_folder()
+    return send_from_directory(upload_folder, filename, as_attachment=True)

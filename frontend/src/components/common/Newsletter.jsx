@@ -1,6 +1,6 @@
 function Newsletter() {
     return (
-      <section className="bg-[#abc9e8] py-10 text-center">
+      <section className="bg-[#8ed1fc] py-10 text-center">
         <h5 className="text-xl font-semibold text-[#002147] mb-4">Subscribe to our Newsletter</h5>
         <form className="flex flex-wrap justify-center gap-3">
           <input
@@ -11,7 +11,7 @@ function Newsletter() {
           />
           <button
             type="submit"
-            className="bg-[#FF9F1C] text-white font-bold px-6 py-2 rounded-full"
+            className="bg-[#da9142] text-white font-bold px-6 py-2 rounded-full"
           >
             Subscribe Now
           </button>
