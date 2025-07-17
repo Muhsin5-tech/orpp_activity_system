@@ -19,8 +19,11 @@ export async function getActivity(id, token) {
 export async function createActivity(data, token) {
   const res = await fetch(`${API_URL}/activities`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
-    body: data,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
   });
   if (!res.ok) throw new Error("Failed to create activity");
   return res.json();
@@ -49,12 +52,12 @@ export async function deleteActivity(id, token) {
 }
 
 export const searchActivities = async (query, token) => {
-  const response = await fetch(`https://orpp-activity.onrender.com/api/activities/search?q=${encodeURIComponent(query)}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
+  const response = await fetch(
+    `${API_URL}/activities/search?q=${encodeURIComponent(query)}`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
   if (!response.ok) throw new Error("Failed to fetch search results");
   return response.json();
 };

@@ -8,9 +8,6 @@ import os
 from werkzeug.utils import secure_filename
 
 
-UPLOAD_FOLDER = "instance/uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
 activity_bp = Blueprint("activity_bp", __name__)
 
 @activity_bp.route("/activities", methods=["GET"])
@@ -50,14 +47,16 @@ def get_activity(id):
 @jwt_required()
 def create_activity():
     try:
-        title = request.form.get("title")
-        description = request.form.get("description")
-        category = request.form.get("category")
-        start_time = request.form.get("start_time")
-        end_time = request.form.get("end_time")
-        venue = request.form.get("venue")
-        department = request.form.get("department")
-        member_notes = request.form.get("member_notes")
+        data = request.get_json()
+
+        title = data.get("title")
+        description = data.get("description")
+        category = data.get("category")
+        start_time = data.get("start_time")
+        end_time = data.get("end_time")
+        venue = data.get("venue")
+        department = data.get("department")
+        member_notes = data.get("member_notes")
 
         if not title or not category or not start_time or not end_time:
             return jsonify({"error": "Missing required fields."}), 400
@@ -80,6 +79,7 @@ def create_activity():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
 
 @activity_bp.route("/activities/<int:id>", methods=["PUT"])
 @jwt_required()
