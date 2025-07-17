@@ -38,8 +38,10 @@ function UserCalendarPage() {
         title: item.title,
         start: new Date(item.start_time),
         end: new Date(item.end_time),
-        department: item.venue,
+        department: item.department,
         description: item.description,
+        member_notes: item.member_notes,
+        attachment: item.attachment,
       }))
     );
   };
@@ -69,7 +71,6 @@ function UserCalendarPage() {
         />
       </div>
 
-      {/* Enhanced Modal */}
       {isModalOpen && selectedEvent && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
           <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 relative border border-gray-200">
@@ -85,22 +86,24 @@ function UserCalendarPage() {
             </h2>
             <hr className="my-3 border-blue-100" />
             <div className="space-y-2 text-gray-700 text-sm">
-              <p>
-                <span className="font-medium text-gray-800">Department:</span>{" "}
-                {selectedEvent.department}
-              </p>
-              <p>
-                <span className="font-medium text-gray-800">Start:</span>{" "}
-                {selectedEvent.start.toLocaleString()}
-              </p>
-              <p>
-                <span className="font-medium text-gray-800">End:</span>{" "}
-                {selectedEvent.end.toLocaleString()}
-              </p>
-              <p>
-                <span className="font-medium text-gray-800">Description:</span>{" "}
-                {selectedEvent.description || "No description provided."}
-              </p>
+              <p><strong>Department:</strong> {selectedEvent.department}</p>
+              <p><strong>Start:</strong> {selectedEvent.start.toLocaleString()}</p>
+              <p><strong>End:</strong> {selectedEvent.end.toLocaleString()}</p>
+              <p><strong>Description:</strong> {selectedEvent.description || "No description provided."}</p>
+              <p><strong>Notes:</strong> {selectedEvent.member_notes || "No notes provided."}</p>
+              {selectedEvent.attachment && (
+                <p>
+                  <strong>Attachment:</strong>{" "}
+                  <a
+                    href={`http://localhost:5000/uploads/${selectedEvent.attachment.split("/").pop()}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline"
+                  >
+                    Download PDF
+                  </a>
+                </p>
+              )}
             </div>
             <div className="mt-6 flex justify-end">
               <button

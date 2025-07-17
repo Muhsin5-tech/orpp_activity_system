@@ -56,6 +56,7 @@ def create_activity():
         end_time = request.form.get("end_time")
         venue = request.form.get("venue")
         department = request.form.get("department")
+        member_notes = request.form.get("member_notes")
         attachment_file = request.files.get("attachment")
 
         if not title or not category or not start_time or not end_time:
@@ -76,6 +77,7 @@ def create_activity():
             end_time=datetime.fromisoformat(end_time),
             venue=venue,
             department=department,
+            member_notes=member_notes,
             attachment=attachment_path
         )
 
@@ -97,6 +99,7 @@ def update_activity(id):
     activity.description = data.get("description", activity.description)
     activity.category = data.get("category", activity.category)
     activity.venue = data.get("venue", activity.venue)
+    activity.member_notes = data.get("member_notes", activity.member_notes)
     activity.department = data.get("department", activity.department)
     if data.get("start_time"):
         activity.start_time = datetime.fromisoformat(data["start_time"])
@@ -141,6 +144,7 @@ def search_activities():
             "start_time": a.start_time.isoformat(),
             "end_time": a.end_time.isoformat(),
             "venue": a.venue,
+            "member_notes": a.member_notes,
             "department": a.department,
         })
 
