@@ -1,23 +1,11 @@
-from flask import Blueprint, request, jsonify, send_from_directory, current_app
+from flask import Blueprint, request, jsonify
 from app.extensions import db
 from app.models import Activity
 from flask_jwt_extended import jwt_required
 from datetime import datetime
 from sqlalchemy import or_
-import os
-from werkzeug.utils import secure_filename
 
 activity_bp = Blueprint("activity_bp", __name__)
-
-# ✅ Use instance/uploads for file storage
-@activity_bp.before_app_first_request
-def create_upload_folder():
-    upload_folder = os.path.join(current_app.instance_path, 'uploads')
-    os.makedirs(upload_folder, exist_ok=True)
-
-# Utility function
-def get_upload_folder():
-    return os.path.join(current_app.instance_path, 'uploads')
 
 
 @activity_bp.route("/activities", methods=["GET"])
@@ -35,8 +23,7 @@ def get_activities():
             "end_time": a.end_time.isoformat(),
             "venue": a.venue,
             "department": a.department,
-            "member_notes": a.member_notes,
-            "attachment": a.attachment
+            "member_notes": a.member_notes
         })
     return jsonify(result), 200
 
@@ -54,8 +41,7 @@ def get_activity(id):
         "end_time": activity.end_time.isoformat(),
         "venue": activity.venue,
         "department": activity.department,
-        "member_notes": activity.member_notes,
-        "attachment": activity.attachment
+        "member_notes": activity.member_notes
     }), 200
 
 
@@ -63,26 +49,18 @@ def get_activity(id):
 @jwt_required()
 def create_activity():
     try:
-        title = request.form.get("title")
-        description = request.form.get("description")
-        category = request.form.get("category")
-        start_time = request.form.get("start_time")
-        end_time = request.form.get("end_time")
-        venue = request.form.get("venue")
-        department = request.form.get("department")
-        member_notes = request.form.get("member_notes")
-        attachment_file = request.files.get("attachment")
+        data = request.get_json()
+        title = data.get("title")
+        description = data.get("description")
+        category = data.get("category")
+        start_time = data.get("start_time")
+        end_time = data.get("end_time")
+        venue = data.get("venue")
+        department = data.get("department")
+        member_notes = data.get("member_notes")
 
         if not title or not category or not start_time or not end_time:
             return jsonify({"error": "Missing required fields."}), 400
-
-        attachment_filename = None
-        if attachment_file:
-            filename = secure_filename(attachment_file.filename)
-            upload_folder = get_upload_folder()
-            file_path = os.path.join(upload_folder, filename)
-            attachment_file.save(file_path)
-            attachment_filename = filename
 
         new_activity = Activity(
             title=title,
@@ -92,8 +70,7 @@ def create_activity():
             end_time=datetime.fromisoformat(end_time),
             venue=venue,
             department=department,
-            member_notes=member_notes,
-            attachment=attachment_filename
+            member_notes=member_notes
         )
 
         db.session.add(new_activity)
@@ -164,14 +141,7 @@ def search_activities():
             "end_time": a.end_time.isoformat(),
             "venue": a.venue,
             "department": a.department,
-            "member_notes": a.member_notes,
-            "attachment": a.attachment
+            "member_notes": a.member_notes
         })
 
     return jsonify(activities_data), 200
-
-
-@activity_bp.route("/uploads/<path:filename>", methods=["GET"])
-def uploaded_file(filename):
-    upload_folder = get_upload_folder()
-    return send_from_directory(upload_folder, filename, as_attachment=True)

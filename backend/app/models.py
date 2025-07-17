@@ -35,4 +35,3 @@ class Activity(db.Model):
     venue = db.Column(db.String(120), nullable=True)
     department = db.Column(db.String(255))
     member_notes = db.Column(db.Text, nullable=True)
-    attachment = db.Column(db.String(255), nullable=True)

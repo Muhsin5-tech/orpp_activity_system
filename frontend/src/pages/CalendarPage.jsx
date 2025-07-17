@@ -6,7 +6,7 @@ import {
   getActivities,
   createActivity,
   updateActivity,
-  deleteActivity
+  deleteActivity,
 } from "../activityApi";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
@@ -25,14 +25,13 @@ function CalendarPage() {
     department: "",
     description: "",
     member_notes: "",
-    attachment: null,
   });
 
   const token = localStorage.getItem("token");
 
   const fetchActivities = async () => {
     const data = await getActivities(token);
-    const formatted = data.map(item => ({
+    const formatted = data.map((item) => ({
       id: item.id,
       title: item.title,
       start: new Date(item.start_time),
@@ -42,7 +41,6 @@ function CalendarPage() {
       venue: item.venue,
       department: item.department,
       member_notes: item.member_notes,
-      attachment: item.attachment,
     }));
     setEvents(formatted);
   };
@@ -63,7 +61,6 @@ function CalendarPage() {
         venue: event.venue,
         description: event.description,
         member_notes: event.member_notes || "",
-        attachment: null,
       });
     } else {
       setFormEvent({
@@ -76,7 +73,6 @@ function CalendarPage() {
         department: "",
         description: "",
         member_notes: "",
-        attachment: null,
       });
     }
     setIsOpen(true);
@@ -85,35 +81,21 @@ function CalendarPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const payload = {
+      title: formEvent.title,
+      description: formEvent.description,
+      member_notes: formEvent.member_notes,
+      category: formEvent.category,
+      start_time: formEvent.start,
+      end_time: formEvent.end,
+      venue: formEvent.venue,
+      department: formEvent.department,
+    };
+
     if (formEvent.id) {
-      await updateActivity(
-        formEvent.id,
-        {
-          title: formEvent.title,
-          description: formEvent.description,
-          member_notes: formEvent.member_notes,
-          category: formEvent.category,
-          start_time: formEvent.start,
-          end_time: formEvent.end,
-          venue: formEvent.venue,
-          department: formEvent.department,
-        },
-        token
-      );
+      await updateActivity(formEvent.id, payload, token);
     } else {
-      const formData = new FormData();
-      formData.append("title", formEvent.title);
-      formData.append("description", formEvent.description);
-      formData.append("member_notes", formEvent.member_notes);
-      formData.append("category", formEvent.category);
-      formData.append("start_time", formEvent.start);
-      formData.append("end_time", formEvent.end);
-      formData.append("venue", formEvent.venue);
-      formData.append("department", formEvent.department);
-      if (formEvent.attachment) {
-        formData.append("attachment", formEvent.attachment);
-      }
-      await createActivity(formData, token);
+      await createActivity(payload, token);
     }
 
     await fetchActivities();
@@ -147,10 +129,10 @@ function CalendarPage() {
     "Legal Services Unit",
     "Supply Chain Management Unit",
     "Internal Audit Unit",
-    "Registrar’s Office"
+    "Registrar’s Office",
   ];
 
-  const eventStyleGetter = event => ({
+  const eventStyleGetter = (event) => ({
     style: {
       backgroundColor: "#0077b6",
       borderRadius: "5px",
@@ -190,50 +172,89 @@ function CalendarPage() {
               {formEvent.id ? "Edit Activity" : "Add New Activity"}
             </Dialog.Title>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <input type="text" required value={formEvent.title}
+              <input
+                type="text"
+                required
+                value={formEvent.title}
                 onChange={(e) => setFormEvent({ ...formEvent, title: e.target.value })}
-                placeholder="Title" className="w-full border px-3 py-2 rounded" />
-              <textarea value={formEvent.description}
+                placeholder="Title"
+                className="w-full border px-3 py-2 rounded"
+              />
+              <textarea
+                value={formEvent.description}
                 onChange={(e) => setFormEvent({ ...formEvent, description: e.target.value })}
-                placeholder="Description" rows="3" className="w-full border px-3 py-2 rounded" />
-              <textarea value={formEvent.member_notes}
+                placeholder="Description"
+                rows="3"
+                className="w-full border px-3 py-2 rounded"
+              />
+              <textarea
+                value={formEvent.member_notes}
                 onChange={(e) => setFormEvent({ ...formEvent, member_notes: e.target.value })}
-                placeholder="Notes for Members Attending" rows="2" className="w-full border px-3 py-2 rounded" />
+                placeholder="Notes for Members Attending"
+                rows="2"
+                className="w-full border px-3 py-2 rounded"
+              />
               <div className="flex gap-4">
-                <input type="datetime-local" required value={formEvent.start}
+                <input
+                  type="datetime-local"
+                  required
+                  value={formEvent.start}
                   onChange={(e) => setFormEvent({ ...formEvent, start: e.target.value })}
-                  className="w-1/2 border px-3 py-2 rounded" />
-                <input type="datetime-local" required value={formEvent.end}
+                  className="w-1/2 border px-3 py-2 rounded"
+                />
+                <input
+                  type="datetime-local"
+                  required
+                  value={formEvent.end}
                   onChange={(e) => setFormEvent({ ...formEvent, end: e.target.value })}
-                  className="w-1/2 border px-3 py-2 rounded" />
+                  className="w-1/2 border px-3 py-2 rounded"
+                />
               </div>
-              <input type="text" placeholder="Venue" value={formEvent.venue}
+              <input
+                type="text"
+                placeholder="Venue"
+                value={formEvent.venue}
                 onChange={(e) => setFormEvent({ ...formEvent, venue: e.target.value })}
-                className="w-full border px-3 py-2 rounded" />
-              <select value={formEvent.department}
+                className="w-full border px-3 py-2 rounded"
+              />
+              <select
+                value={formEvent.department}
                 onChange={(e) => setFormEvent({ ...formEvent, department: e.target.value })}
-                className="w-full border px-3 py-2 rounded">
+                className="w-full border px-3 py-2 rounded"
+              >
                 <option value="">-- Select Department --</option>
-                {departments.map((d, i) => <option key={i} value={d}>{d}</option>)}
+                {departments.map((d, i) => (
+                  <option key={i} value={d}>
+                    {d}
+                  </option>
+                ))}
               </select>
-              <select value={formEvent.category}
+              <select
+                value={formEvent.category}
                 onChange={(e) => setFormEvent({ ...formEvent, category: e.target.value })}
-                className="w-full border px-3 py-2 rounded">
+                className="w-full border px-3 py-2 rounded"
+              >
                 <option value="">-- Select Category --</option>
-                {categories.map((c, i) => <option key={i} value={c}>{c}</option>)}
+                {categories.map((c, i) => (
+                  <option key={i} value={c}>
+                    {c}
+                  </option>
+                ))}
               </select>
-              <input type="file"
-                onChange={(e) => setFormEvent({ ...formEvent, attachment: e.target.files[0] })}
-                className="w-full" />
               <div className="flex justify-end gap-3 pt-4">
                 {formEvent.id && (
-                  <button type="button" onClick={handleDelete}
-                    className="bg-red-500 text-white px-4 py-2 rounded">
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    className="bg-red-500 text-white px-4 py-2 rounded"
+                  >
                     Delete
                   </button>
                 )}
-                <button type="submit"
-                  className="bg-[#002147] text-white px-4 py-2 rounded">
+                <button
+                  type="submit"
+                  className="bg-[#002147] text-white px-4 py-2 rounded"
+                >
                   Save
                 </button>
               </div>
