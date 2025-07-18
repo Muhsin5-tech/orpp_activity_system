@@ -1,8 +1,8 @@
-"""Add activity model
+"""Initial migration for PostgreSQL
 
-Revision ID: 7141312a71d0
+Revision ID: 2cf8e68bc1f0
 Revises: 
-Create Date: 2025-07-12 11:38:23.567454
+Create Date: 2025-07-18 10:58:32.419935
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '7141312a71d0'
+revision = '2cf8e68bc1f0'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -26,6 +26,8 @@ def upgrade():
     sa.Column('start_time', sa.DateTime(), nullable=False),
     sa.Column('end_time', sa.DateTime(), nullable=False),
     sa.Column('venue', sa.String(length=120), nullable=True),
+    sa.Column('department', sa.String(length=255), nullable=True),
+    sa.Column('member_notes', sa.Text(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('user',
@@ -34,6 +36,9 @@ def upgrade():
     sa.Column('full_name', sa.String(length=120), nullable=False),
     sa.Column('password_hash', sa.String(length=256), nullable=False),
     sa.Column('role', sa.String(length=50), nullable=False),
+    sa.Column('department', sa.String(length=100), nullable=True),
+    sa.Column('phone_number', sa.String(length=20), nullable=True),
+    sa.Column('id_number', sa.String(length=50), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )
