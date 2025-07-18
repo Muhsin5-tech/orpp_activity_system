@@ -2,12 +2,27 @@ import {
   Facebook,
   Instagram,
   Twitter,
-  MessageCircle,
-  PhoneCall
+  ArrowUp
 } from "lucide-react";
 import { FaTiktok, FaWhatsapp, FaYoutube } from "react-icons/fa";
+import { useEffect, useState } from "react";
 
 function Footer() {
+  const [showScroll, setShowScroll] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const docHeight = document.body.offsetHeight;
+
+      setShowScroll(scrollTop + windowHeight >= docHeight - 300);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
     return (
       <footer className="bg-[#2b4182] text-[#ccc] text-sm">
         <div className="container mx-auto py-8 grid md:grid-cols-4 gap-6 px-4">
@@ -128,9 +143,18 @@ function Footer() {
             />
           </div>
         </div>
-  
+        {showScroll && (
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="fixed bottom-6 right-6 z-50 bg-white text-[#002147] border border-[#002147] p-3 rounded-full shadow-lg hover:bg-[#002147] hover:text-white transition-all duration-300"
+            aria-label="Scroll to top"
+          >
+            <ArrowUp size={20} />
+          </button>
+        )}
+
         <div className="border-t border-white/20 text-center py-4 text-white">
-          &copy; {new Date().getFullYear()} ORPP. All rights reserved. | <a href="https://orpp.or.ke/data-privacy-statement/" className="underline">Data Privacy</a>
+          &copy; {new Date().getFullYear()} ORPP. All rights reserved. | {" "} <a href="https://orpp.or.ke/data-privacy-statement/" className="underline">Data privacy statement</a>
         </div>
       </footer>
     );

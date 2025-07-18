@@ -66,12 +66,21 @@ function DashboardPage() {
           </button>
         )}
 
-        <button
-          onClick={() => navigate("/view-calendar")}
-          className="bg-[#abc9e8] text-[#002147] font-semibold py-3 rounded hover:bg-blue-300 transition"
-        >
-          View Calendar
-        </button>
+        {role === "admin" ? (
+          <button
+            onClick={() => navigate("/calendar")}
+            className="bg-[#abc9e8] text-[#002147] font-semibold py-3 rounded hover:bg-blue-300 transition"
+          >
+            View Calendar
+          </button>
+        ) : (
+          <button
+            onClick={() => navigate("/view-calendar")}
+            className="bg-[#abc9e8] text-[#002147] font-semibold py-3 rounded hover:bg-blue-300 transition"
+          >
+            View Calendar
+          </button>
+        )}
 
         {role === "admin" && (
           <button

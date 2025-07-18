@@ -25,7 +25,9 @@ export async function createActivity(data, token) {
     },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("Failed to create activity");
+  if (!res.ok) {
+    const error = await res.text();
+    throw new Error(error?.error || "Failed to create activity");}
   return res.json();
 }
 
